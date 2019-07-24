@@ -37,29 +37,7 @@
   };
 
   var generateAndSignJWTAssertion = function(clientId, scopes, privateKey, oAuthBasePath, expiresIn, userId) {
-    if(typeof expiresIn !== 'number' || expiresIn < 0)
-      throw new Error("Invalid expires in param detected");
-
-    var MILLESECONDS_PER_SECOND = 1000,
-      JWT_SIGNING_ALGO = "RS256",
-      now = Math.floor(Date.now() / MILLESECONDS_PER_SECOND),
-      later = now + expiresIn,
-      jwt = require('jsonwebtoken'),
-      parsedScopes = Array.isArray(scopes) ? scopes.join(' ') : scopes;
-
-    var jwtPayload = {
-      iss: clientId,
-      aud: oAuthBasePath,
-      iat: now,
-      exp: later,
-      scope: parsedScopes,
-    };
-
-    /** optional parameters  **/
-    if(userId) {
-      jwtPayload.sub = userId;
-    }
-    return jwt.sign(jwtPayload, privateKey, { algorithm: JWT_SIGNING_ALGO });
+    throw new Error('generateAndSignJWTAssertion not supported on React Native');
   };
 
   var sendJWTTokenRequest = function (assertion, oAuthBasePath, callback) {
@@ -832,17 +810,11 @@
   };
 
   exports.prototype.requestJWTUserToken = function(clientId, userId, scopes, rsaPrivateKey, expiresIn, callback) {
-    var privateKey = rsaPrivateKey,
-      assertion = generateAndSignJWTAssertion(clientId, scopes, privateKey, this.getOAuthBasePath(), expiresIn, userId);
-
-    return sendJWTTokenRequest(assertion, this.oAuthBasePath, callback);
+    throw new Error('requestJWTUserToken is not supported in React Native');
   };
 
   exports.prototype.requestJWTApplicationToken = function(clientId, scopes, rsaPrivateKey, expiresIn, callback) {
-    var privateKey = rsaPrivateKey,
-      assertion = generateAndSignJWTAssertion(clientId, scopes, privateKey, this.getOAuthBasePath(), expiresIn);
-
-    return sendJWTTokenRequest(assertion, this.oAuthBasePath, callback);
+    throw new Error('requestJWTApplicationToken is not supported in React Native');
   };
 
   exports.prototype.OAuth = require('./OAuth');
