@@ -280,26 +280,7 @@
    * @returns {Boolean} <code>true</code> if <code>param</code> represents a file.
    */
   exports.prototype.isFileParam = function(param) {
-    // fs.ReadStream in Node.js (but not in runtime like browserify)
-    if (typeof window === 'undefined' &&
-      typeof require === 'function' &&
-      require('fs') &&
-      param instanceof require('fs').ReadStream) {
-      return true;
-    }
-    // Buffer in Node.js
-    if (typeof Buffer === 'function' && param instanceof Buffer) {
-      return true;
-    }
-    // Blob in browser
-    if (typeof Blob === 'function' && param instanceof Blob) {
-      return true;
-    }
-    // File in browser (it seems File object is also instance of Blob, but keep this for safe)
-    if (typeof File === 'function' && param instanceof File) {
-      return true;
-    }
-    return false;
+    throw new Error('isFileParam is not supported in React Native');
   };
 
   /**
@@ -833,42 +814,7 @@
    * @param callback the callback function.
    */
   exports.prototype.configureJWTAuthorizationFlow = function(privateKeyFilename, oAuthBasePath, clientId, userId, expiresIn, callback) {
-    console.warn('configureJWTAuthorizationFlow is a deprecated function! Please use requestJWTUserToken()')
-    var _this = this;
-    var jwt = require('jsonwebtoken')
-      , fs  = require('fs')
-      , private_key = fs.readFileSync(privateKeyFilename)
-      , now         = Math.floor(Date.now() / 1000)
-      , later       = now + expiresIn;
-
-    var jwt_payload = {
-      iss: clientId,
-      sub: userId,
-      aud: oAuthBasePath,
-      iat: now,
-      exp: later,
-      scope: "signature"
-    };
-
-    var assertion = jwt.sign(jwt_payload, private_key, {algorithm: 'RS256'});
-
-    superagent('post', 'https://' + this.getOAuthBasePath() + '/oauth/token')
-      .timeout(this.timeout)
-      .set('Content-Type', 'application/x-www-form-urlencoded')
-      .set('Cache-Control', 'no-store')
-      .set('Pragma', 'no-cache')
-      .send({
-        'assertion': assertion,
-        'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer'
-      })
-      .end(function(err, res) {
-        if (callback) {
-          if (!err && res.body && res.body.access_token) {
-            _this.addDefaultHeader('Authorization', 'Bearer ' + res.body.access_token);
-          }
-          callback(err, res);
-        }
-      });
+    throw new Error('configureJWTAuthorizationFlow is deprecated');
   };
 
   exports.prototype.hasNoInvalidScopes = function(scopes) {
